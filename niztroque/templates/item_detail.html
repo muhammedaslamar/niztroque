@@ -1,0 +1,61 @@
+{% extends 'base.html'%}
+{% block content %}
+
+  <div class="container pt-4">
+    <h1><b class="text-warning">{{item.name}}</b></h2>
+
+    <div class="item-image mt-4">
+      <img src="{{item.image.url}}" alt="Product Image">
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Event Name:</div>
+      <div class="value">{{item.name}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Category:</div>
+      <div class="value">{{item.category}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Event Type:</div>
+      <div class="value">{{item.e_type}}--{% if item.amount > 0 %} ${{item.amount}} {% endif %} </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">District:</div>
+      <div class="value">{{item.location}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Location:</div>
+      <div class="value">{{item.sub_location}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Date:</div>
+      <div class="value">{{item.date}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Time:</div>
+      <div class="value">{{item.time}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Adress:</div>
+      <div class="value">{{item.adress}}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="label">Description:</div>
+      <div class="value ml-4">{{item.desc}}</div>
+    </div>
+
+    <div class="detail-row">
+      <a href="{{item.link}}">Click here</a>
+    </div>
+  </div>
+
+  {% endblock %}

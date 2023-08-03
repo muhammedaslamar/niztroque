@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h1>Registration Payment</h1>
+    <form id="paymentForm" method="POST" action="{% url 'create_order' %}">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Name"><br><br>
+        <input type="email" name="email" placeholder="Email"><br><br>
+        <input type="number" name="amount" placeholder="Amount"><br><br>
+        <button type="button" onclick="makePayment()">Pay Now</button>
+    </form>
+
+    <script>
+        function makePayment() {
+            var name = document.querySelector('input[name="name"]').value;
+            var email = document.querySelector('input[name="email"]').value;
+            var amount = document.querySelector('input[name="amount"]').value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url "create_order" %}');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var options = {
+                        "key": response.key_id,
+                        "amount": response.amount,
+                        "currency": response.currency,
+                        "name": "Registration Payment",
+                        "description": "Payment for registration",
+                        "order_id": response.id,
+                        "handler": function(response) {
+                            var payment_id = response.razorpay_payment_id;
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('POST', '{% url "verify_payment" %}');
+                            xhr.setRequestHeader('Content-Type', 'application/json');
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    alert('Payment successful!');
+                                    // Redirect or perform necessary actions after successful payment
+                                } else {
+                                    alert('Payment verification failed!');
+                                }
+                            };
+                            xhr.send(JSON.stringify({
+                                'payment_id': payment_id,
+                                'order_id': response.razorpay_order_id
+                            }));
+                        },
+                        "prefill": {
+                            "name": name,
+                            "email": email
+                        },
+                        "theme": {
+                            "color": "#F37254"
+                        }
+                    };
+                    var rzp = new Razorpay(options);
+                    rzp.open();
+                } else {
+                    alert('Error creating Razorpay order!');
+                }
+            };
+            xhr.send(JSON.stringify({
+                'amount': amount
+            }));
+        }
+    </script>
+</body>
+</html>
